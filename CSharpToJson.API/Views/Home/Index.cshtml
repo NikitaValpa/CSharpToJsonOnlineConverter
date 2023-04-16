@@ -2,6 +2,18 @@
     ViewData["Title"] = "Home Page";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
+<div class="row gx-2 mt-3">
+    <div class="col">
+        <form>
+            <div class="mb-3">
+                <label for="floatingTextarea" class="form-label">C# code</label>
+                <textarea style="resize: none" class="form-control" id="floatingTextarea" rows="30"></textarea>
+            </div>
+            <button type="submit" class="btn btn-primary">Submit</button>
+        </form>
+    </div>
+
+    <div class="col border border-2 rounded-3" style="margin-top: 2rem!important">
+        <samp class="ms-3"></samp>
+    </div>
 </div>
