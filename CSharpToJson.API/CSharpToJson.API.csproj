@@ -2,8 +2,11 @@
 
   <PropertyGroup>
     <TargetFramework>net7.0</TargetFramework>
-    <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
   </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\CSharpToJson.Application\CSharpToJson.Application.csproj" />
+  </ItemGroup>
 
 </Project>

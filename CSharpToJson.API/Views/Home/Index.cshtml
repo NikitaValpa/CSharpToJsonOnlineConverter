@@ -1,19 +1,32 @@
-﻿@{
+﻿@model JsonCodeViewModel
+@{
     ViewData["Title"] = "Home Page";
 }
 
-<div class="row gx-2 mt-3">
-    <div class="col">
-        <form>
-            <div class="mb-3">
-                <label for="floatingTextarea" class="form-label">C# code</label>
-                <textarea style="resize: none" class="form-control" id="floatingTextarea" rows="30"></textarea>
-            </div>
-            <button type="submit" class="btn btn-primary">Submit</button>
+<div class="row gx-2 mt-3 justify-content-between">
+    <div class="col-md-5">
+        <form id="form1" asp-area="" asp-controller="Home" asp-action="Convert">
+            <label for="floatingTextarea" class="form-label">C# code</label>
         </form>
     </div>
-
-    <div class="col border border-2 rounded-3" style="margin-top: 2rem!important">
-        <samp class="ms-3"></samp>
+    <div class="col-md-6">
+        <p class="text-start">Json output or validation errors</p>
     </div>
 </div>
+
+<div class="row gx-2">
+    <div class="col">
+        <textarea form="form1" name="code" required style="resize: none" class="form-control" id="floatingTextarea" rows="30"></textarea>
+    </div>
+
+    <div class="col border border-2 rounded-3">
+        <samp class="ms-3">@(Model.Json ?? Model.Errors)</samp>
+    </div>
+</div>
+
+<div class="row gx-2 mt-3 justify-content-center">
+    <div class="col-auto">
+        <button type="submit" form="form1" class="btn btn-primary btn-lg">Convert</button>
+    </div>
+</div>
+

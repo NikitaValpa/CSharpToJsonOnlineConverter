@@ -2,6 +2,11 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+builder.Services.AddMediator(opt =>
+{
+    opt.Namespace = "CSharpToJson.Application";
+    opt.ServiceLifetime = ServiceLifetime.Scoped;
+});
 
 var app = builder.Build();
 
