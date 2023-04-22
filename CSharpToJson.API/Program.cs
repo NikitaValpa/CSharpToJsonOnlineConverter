@@ -1,3 +1,5 @@
+using CSharpToJson.Application.Services;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -7,6 +9,8 @@ builder.Services.AddMediator(opt =>
     opt.Namespace = "CSharpToJson.Application";
     opt.ServiceLifetime = ServiceLifetime.Scoped;
 });
+builder.Services.AddScoped<ICodeAnalyzer, CSharpCodeAnalyzer>();
+builder.Services.AddScoped<ICodeWriter, CSharpCodeWriter>();
 
 var app = builder.Build();
 

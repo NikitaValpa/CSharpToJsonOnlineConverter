@@ -4,6 +4,6 @@ namespace CSharpToJson.Application.Services
 {
     public interface ICodeWriter
     {
-        string Write(List<ObjectModel> objectModels);
+        string Write(IEnumerable<ObjectModel> objectModels);
     }
 }

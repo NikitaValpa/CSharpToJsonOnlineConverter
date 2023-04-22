@@ -1,10 +1,10 @@
 ﻿using CSharpToJson.Domain.Models;
 
-namespace CSharpToJson.Application
+namespace CSharpToJson.Application.Common
 {
     internal static class CSharpTypesMapping
     {
-        private static readonly Dictionary<string, string> Mappings = new Dictionary<string, string>
+        private static readonly Dictionary<string, string> Mappings = new()
         {
             { "string", "\"\"" },
             { "String", "\"\"" },
@@ -39,23 +39,21 @@ namespace CSharpToJson.Application
 
         };
 
-        static internal string Map(string type)
+        internal static string Map(string type)
         {
             return Mappings[type];
         }
 
-        static internal string MapArray(ObjectModel type)
+        internal static string MapArray(ObjectModel type)
         {
-            return string.Format("new {0}[]{{{1}}}", type.GenericType, Mappings[type.GenericType]);
+            return $"new {type.GenericType}[]{{{Mappings[type.GenericType]}}}";
         }
 
-        static internal string MapObject(ObjectModel type)
+        internal static string MapObject(ObjectModel type)
         {
-            if (type.PropertyType.Contains("IEnumerable"))
-            {
-                return string.Format("new {0}()", type.PropertyType.Replace("IEnumerable", "List"));
-            }
-            return string.Format("new {0}()", type.PropertyType);
+            return type.PropertyType.Contains("IEnumerable") ?
+                $"new {type.PropertyType.Replace("IEnumerable", "List")}()" :
+                $"new {type.PropertyType}()";
         }
     }
 }

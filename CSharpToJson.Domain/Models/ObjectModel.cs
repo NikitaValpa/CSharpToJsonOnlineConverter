@@ -14,19 +14,17 @@ namespace CSharpToJson.Domain.Models
         /// <summary>
         /// The syntatic kind of the token, ClassDeclaration or PropertyDeclaration
         /// </summary>
-        /// 
         public SyntaxKind TokenType { get; set; }
 
         /// <summary>
         /// The syntatic kind of the node, GenericName, PredefinedType, ArrayType
         /// </summary>
-        /// 
         public SyntaxKind NodeType { get; set; }
 
         /// <summary>
         /// Class name in case the type is a class or Property Name in case the type is a property
         /// </summary>
-        public string SyntaxName { get; set; } // testint
+        public string SyntaxName { get; set; }
 
         /// <summary>
         /// The type of the property inside of the class
