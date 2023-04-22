@@ -1,0 +1,35 @@
+{
+  "version": "1.0",
+  "defaultProvider": "cdnjs",
+  "libraries": [
+    {
+      "library": "bootstrap@5.3.0-alpha3",
+      "destination": "wwwroot/lib/bootstrap/dist",
+      "files": [
+        "js/bootstrap.min.js",
+        "js/bootstrap.min.js.map",
+        "js/bootstrap.esm.min.js",
+        "js/bootstrap.esm.min.js.map",
+        "js/bootstrap.bundle.min.js",
+        "js/bootstrap.bundle.min.js.map",
+        "css/bootstrap.css",
+        "css/bootstrap-grid.css",
+        "css/bootstrap-reboot.css",
+        "css/bootstrap-utilities.css"
+      ]
+    },
+    {
+      "provider": "cdnjs",
+      "library": "prism@9000.0.1",
+      "destination": "wwwroot/lib/prism/",
+      "files": [
+        "prism.min.js",
+        "themes/prism.min.css",
+        "themes/prism-tomorrow.min.css",
+        "components/prism-clike.min.js",
+        "components/prism-core.min.js",
+        "components/prism-csharp.min.js"
+      ]
+    }
+  ]
+}

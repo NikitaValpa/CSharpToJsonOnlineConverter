@@ -26,7 +26,7 @@ namespace CSharpToJson.API.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Convert([FromForm, Required] CSharpCodeModel model,
+        public async Task<IActionResult> Index([FromForm, Required] CSharpCodeModel model,
             CancellationToken cancellationToken)
         {
             if (ModelState.IsValid)

@@ -1,19 +1,20 @@
 ﻿<!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-bs-theme="dark">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>CSharpToJsonConverter</title>
-    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <title>CSharp to json online converter</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/CSharpToJson.API.styles.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/lib/prism/themes/prism-tomorrow.min.css"/>
 </head>
 <body>
     <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
+        <nav class="navbar navbar-expand-sm border-bottom box-shadow mb-3">
             <div class="container-fluid justify-content-center">
                 <div class="col-auto">
-                    <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">CSharpToJsonConverter</a>
+                    <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">CSharp to json online converter</a>
                 </div>
             </div>
         </nav>
@@ -33,6 +34,9 @@
 <script src="~/lib/jquery/dist/jquery.min.js"></script>
 <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
 <script src="~/js/site.js" asp-append-version="true"></script>
+<script src="~/lib/prism/prism.min.js"></script>
+<script src="~/lib/prism/components/prism-clike.min.js"></script>
+<script src="~/lib/prism/components/prism-csharp.min.js"></script>
 @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>
