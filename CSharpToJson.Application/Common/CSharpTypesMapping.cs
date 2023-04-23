@@ -6,8 +6,8 @@ namespace CSharpToJson.Application.Common
     {
         private static readonly Dictionary<string, string> Mappings = new()
         {
-            { "string", "\"\"" },
-            { "String", "\"\"" },
+            { "string", "" },
+            { "String", "" },
 
             { "bool", "true" },
             { "bool?", "true" },

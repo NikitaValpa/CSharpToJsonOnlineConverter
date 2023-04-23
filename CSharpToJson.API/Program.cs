@@ -10,7 +10,7 @@ builder.Services.AddMediator(opt =>
     opt.ServiceLifetime = ServiceLifetime.Scoped;
 });
 builder.Services.AddScoped<ICodeAnalyzer, CSharpCodeAnalyzer>();
-builder.Services.AddScoped<ICodeWriter, CSharpCodeWriter>();
+builder.Services.AddScoped<IJsonCodeWriter, CSharpJsonCodeWriter>();
 
 var app = builder.Build();
 

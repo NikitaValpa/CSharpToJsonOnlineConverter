@@ -2,7 +2,7 @@
 
 namespace CSharpToJson.Application.Services
 {
-    public interface ICodeWriter
+    public interface IJsonCodeWriter
     {
         string Write(IEnumerable<ObjectModel> objectModels);
     }

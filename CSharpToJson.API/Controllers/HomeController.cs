@@ -2,7 +2,7 @@
 using CSharpToJson.API.Models;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
-using CSharpToJson.Application.Logic.SharpCodeModel.Requests;
+using CSharpToJson.Application.Logic.SharpCodeModel.Commands;
 using CSharpToJson.Domain.Models;
 using Mediator;
 
@@ -31,7 +31,7 @@ namespace CSharpToJson.API.Controllers
         {
             if (ModelState.IsValid)
             {
-                var res = await _mediator.Send(new ConvertCSharpToJsonRequest
+                var res = await _mediator.Send(new ConvertCSharpToJsonCommand
                 {
                     Request = model
                 }, cancellationToken);
