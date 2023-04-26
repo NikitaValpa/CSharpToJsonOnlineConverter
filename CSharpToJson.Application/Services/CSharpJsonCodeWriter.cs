@@ -11,14 +11,16 @@ namespace CSharpToJson.Application.Services
         private readonly StringBuilder _builder;
         private readonly ILogger<CSharpJsonCodeWriter> _logger;
         private List<ObjectModel> _objectModels;
+        private readonly List<string> _errors;
 
         public CSharpJsonCodeWriter(ILogger<CSharpJsonCodeWriter> logger)
         {
             _logger = logger;
             _builder = new StringBuilder();
+            _errors = new List<string>();
         }
 
-        public string Write(IEnumerable<ObjectModel> objectModels)
+        public (string json, string errors) Write(IEnumerable<ObjectModel> objectModels)
         {
             _builder.AppendLine("{");
 
@@ -33,7 +35,12 @@ namespace CSharpToJson.Application.Services
 
             _builder.AppendLine("}");
 
-            return _builder.ToString();
+            if (_errors.Any())
+            {
+                return (null, string.Join(string.Empty, _errors));
+            }
+
+            return (_builder.ToString(), null);
         }
 
         private void WriteClassMember(ObjectModel classObject)
@@ -114,14 +121,14 @@ namespace CSharpToJson.Application.Services
                 catch (Exception ex)
                 {
                     _logger.LogError(ex, "Error by json write proceeding");
-                    _builder.Append($"// Unknown Property : {propertyModel.SyntaxName} {Environment.NewLine}");
+                    _errors.Add($"Unknown type of property: {propertyModel.SyntaxName} {Environment.NewLine}");
                 }
             }
         }
 
         private void BuilderWriteMember(string syntaxName, string typeExample, bool isLastObject = false)
         {
-            _builder.Append($"\"{syntaxName}\": \"{typeExample}\"{(isLastObject ? string.Empty : ",")}{Environment.NewLine}");
+            _builder.Append($"\"{syntaxName}\": {typeExample ?? "null"}{(isLastObject ? string.Empty : ",")}{Environment.NewLine}");
         }
 
         private void BuilderWriteClass(string objectName)

@@ -4,6 +4,6 @@ namespace CSharpToJson.Application.Services
 {
     public interface IJsonCodeWriter
     {
-        string Write(IEnumerable<ObjectModel> objectModels);
+        (string json, string errors) Write(IEnumerable<ObjectModel> objectModels);
     }
 }

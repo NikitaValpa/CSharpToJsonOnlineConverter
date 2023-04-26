@@ -33,11 +33,19 @@ public class ConvertCSharpToJsonCommandHandler : ICommandHandler<ConvertCSharpTo
             });
         }
 
-        var generatedJsonStr = _jsonCodeWriter.Write(analyzeRes.parsedTree);
+        var generatedJsonRes = _jsonCodeWriter.Write(analyzeRes.parsedTree);
+
+        if (!string.IsNullOrEmpty(generatedJsonRes.errors))
+        {
+            return ValueTask.FromResult(new JsonCodeViewModel
+            {
+                Errors = generatedJsonRes.errors
+            });
+        }
 
         return ValueTask.FromResult(new JsonCodeViewModel
         {
-            Json = generatedJsonStr
+            Json = generatedJsonRes.json
         });
     }
 }

@@ -14,15 +14,16 @@
     </div>
 </div>
 
-<div class="row gx-2" style="box-sizing: content-box; min-height: 26em;">
-    <div class="col">
-        <textarea form="form1" name="code" required style="resize: none" spellcheck="false" class="form-control position-absolute" id="floatingTextarea" onscroll="syncScroll(this);" oninput="update(this.value);"></textarea>
+<div id="codeBlock">
+    <div>
+        <textarea form="form1" name="code" required style="resize: none" spellcheck="false" class="form-control position-absolute" id="floatingTextarea"
+                  onscroll="syncScroll(this);" oninput="update(this.value);"></textarea>
         <pre id="highlighting" class="position-absolute" aria-hidden="true">
             <code id="highlighting-content" class="language-csharp"></code>
         </pre>
     </div>
 
-    <div class="col border border-2 rounded-3 position-absolute start-50" id="output">
+    <div class="border border-2 rounded-3 position-absolute start-50" id="output">
         <pre>
             <samp class="ms-3">@(Model.Json ?? Model.Errors)</samp>
         </pre>
@@ -52,5 +53,13 @@
         resultElement.scrollTop = element.scrollTop;
         resultElement.scrollLeft = element.scrollLeft;
     }
+
+    const resizeObserver = new ResizeObserver(elements => {
+        for (const elem of elements) {
+            document.querySelector('#codeBlock').style.height = `${elem.borderBoxSize[0].blockSize}px`;
+        }
+    });
+
+    resizeObserver.observe(document.querySelector('#floatingTextarea'));
 </script>
 

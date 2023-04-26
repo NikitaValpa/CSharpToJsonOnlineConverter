@@ -106,7 +106,8 @@ namespace CSharpToJson.Application.Services
                         // get the generic type inside the array, or list
                         foreach (var genericItem in item.ChildNodes())
                         {
-                            if (genericItem.Kind() != SyntaxKind.PredefinedType) continue;
+                            if (genericItem.Kind() != SyntaxKind.PredefinedType 
+                                && genericItem.Kind() != SyntaxKind.NullableType) continue;
 
                             property.GenericType = genericItem.ToString();
                             break;

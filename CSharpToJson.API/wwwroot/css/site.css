@@ -54,3 +54,7 @@ body {
 #highlighting {
     z-index: 0;
 }
+
+pre {
+    background: #212529 !important;
+}

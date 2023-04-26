@@ -4,56 +4,192 @@ namespace CSharpToJson.Application.Common
 {
     internal static class CSharpTypesMapping
     {
-        private static readonly Dictionary<string, string> Mappings = new()
+        private static readonly Dictionary<List<string>, object> Mappings = new ()
         {
-            { "string", "" },
-            { "String", "" },
-
-            { "bool", "true" },
-            { "bool?", "true" },
-            { "Boolean", "true" },
-            { "Boolean?", "true" },
-
-            { "Guid", "Guid.NewGuid()"},
-
-            { "Datetime", "DateTime.Now"},
-            { "Datetime?", "DateTime.Now"},
-            { "DateTime", "DateTime.Now"},
-            { "DateTime?", "DateTime.Now"},
-
-            { "DateTimeOffset", "DateTimeOffset.Now"},
-            { "DateTimeOffset?", "DateTimeOffset.Now"},
-
-            { "int", "1"},
-            { "int?", "1"},
-
-            { "uint", "1"},
-            { "long", "1"},
-            { "double", "1"},
-            { "Double", "1"},
-            { "float", "1"},
-            { "decimal", "1"},
-            { "byte", "1"},
-
-            { "char", "\'c\'"},
-
+            {new List<string>
+            {
+                "string",
+                "String"
+            }, "\"string\""},
+            {new List<string>
+            {
+                "object",
+                "Object"
+            }, "{}"},
+            {new List<string>
+            {
+                "bool",
+                "Boolean"
+            }, default(bool).ToString().ToLower()},
+            {new List<string>
+            {
+                "Boolean?",
+                "bool?",
+            }, default(bool?)},
+            {new List<string>
+            {
+                "Guid"
+            }, $"\"{Guid.NewGuid()}\""},
+            {new List<string>
+            {
+                "Guid?"
+            }, default(Guid?)},
+            {new List<string>
+            {
+                "DateTime"
+            }, $"\"{default(DateTime)}\""},
+            {new List<string>
+            {
+                "DateTime?"
+            }, default(DateTime?)},
+            {new List<string>
+            {
+                "TimeSpan"
+            }, $"\"{default(TimeSpan)}\""},
+            {new List<string>
+            {
+                "TimeSpan?"
+            }, default(TimeSpan?)},
+            {new List<string>
+            {
+                "byte",
+                "Byte"
+            }, default(byte)},
+            {new List<string>
+            {
+                "byte?",
+                "Byte?"
+            }, default(byte?)},
+            {new List<string>
+            {
+                "sbyte",
+                "SByte"
+            }, default(sbyte)},
+            {new List<string>
+            {
+                "sbyte?",
+                "SByte?"
+            }, default(sbyte?)},
+            {new List<string>
+            {
+                "short",
+                "Int16"
+            }, default(short)},
+            {new List<string>
+            {
+                "short?",
+                "Int16?"
+            }, default(short?)},
+            {new List<string>
+            {
+                "ushort",
+                "UInt16"
+            }, default(ushort)},
+            {new List<string>
+            {
+                "ushort?",
+                "UInt16?"
+            }, default(ushort?)},
+            {new List<string>
+            {
+                "int",
+                "Int32"
+            }, default(int)},
+            {new List<string>
+            {
+                "int?",
+                "Int32?"
+            }, default(int?)},
+            {new List<string>
+            {
+                "uint",
+                "UInt32"
+            }, default(uint)},
+            {new List<string>
+            {
+                "uint?",
+                "UInt32?"
+            }, default(uint?)},
+            {new List<string>
+            {
+                "long",
+                "Int64"
+            }, default(long)},
+            {new List<string>
+            {
+                "long?",
+                "Int64?"
+            }, default(long?)},
+            {new List<string>
+            {
+                "ulong",
+                "UInt64"
+            }, default(ulong)},
+            {new List<string>
+            {
+                "ulong?",
+                "UInt64?"
+            }, default(ulong?)},
+            {new List<string>
+            {
+                "double",
+                "Double"
+            }, default(double)},
+            {new List<string>
+            {
+                "double?",
+                "Double?"
+            }, default(double?)},
+            {new List<string>
+            {
+                "float",
+                "Single"
+            }, default(float)},
+            {new List<string>
+            {
+                "float?",
+                "Single?"
+            }, default(float?)},
+            {new List<string>
+            {
+                "decimal",
+                "Decimal"
+            }, default(decimal)},
+            {new List<string>
+            {
+                "decimal?",
+                "Decimal?"
+            }, default(decimal?)},
+            {new List<string>
+            {
+                "char",
+                "Char"
+            }, default(char)},
+            {new List<string>
+            {
+                "char?",
+                "Char?"
+            }, default(char?)}
         };
 
         internal static string Map(string type)
         {
-            return Mappings[type];
+            return Mappings
+                .First(k => k.Key.Any(t => t == type))
+                .Value
+                ?.ToString();
         }
 
         internal static string MapArray(ObjectModel type)
         {
-            return $"new {type.GenericType}[]{{{Mappings[type.GenericType]}}}";
+            return $"[{Mappings
+                .First(k => k.Key.Any(t => t == type.GenericType))
+                .Value ?? "null"}]";
         }
 
         internal static string MapObject(ObjectModel type)
         {
-            return type.PropertyType.Contains("IEnumerable") ?
-                $"new {type.PropertyType.Replace("IEnumerable", "List")}()" :
-                $"new {type.PropertyType}()";
+            return "{}";
         }
     }
 }
