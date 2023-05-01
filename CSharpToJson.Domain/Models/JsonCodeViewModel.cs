@@ -1,4 +1,4 @@
-﻿namespace CSharpToJson.API.Models;
+﻿namespace CSharpToJson.Domain.Models;
 
 public class JsonCodeViewModel
 {

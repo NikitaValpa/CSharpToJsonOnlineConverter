@@ -1,5 +1,4 @@
-﻿using CSharpToJson.API.Models;
-using CSharpToJson.Application.Services;
+﻿using CSharpToJson.Application.Services;
 using CSharpToJson.Domain.Models;
 using Mediator;
 

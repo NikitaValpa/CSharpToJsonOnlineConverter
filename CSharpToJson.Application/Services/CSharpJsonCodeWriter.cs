@@ -8,23 +8,23 @@ namespace CSharpToJson.Application.Services
 {
     public class CSharpJsonCodeWriter : IJsonCodeWriter
     {
-        private readonly StringBuilder _builder;
-        private readonly ILogger<CSharpJsonCodeWriter> _logger;
+        private StringBuilder _builder;
         private List<ObjectModel> _objectModels;
-        private readonly List<string> _errors;
+        private List<string> _errors;
+        private readonly ILogger<CSharpJsonCodeWriter> _logger;
 
         public CSharpJsonCodeWriter(ILogger<CSharpJsonCodeWriter> logger)
         {
             _logger = logger;
-            _builder = new StringBuilder();
-            _errors = new List<string>();
         }
 
         public (string json, string errors) Write(IEnumerable<ObjectModel> objectModels)
         {
-            _builder.AppendLine("{");
-
+            _builder = new StringBuilder();
+            _errors = new List<string>();
             _objectModels = objectModels.ToList();
+
+            _builder.AppendLine("{");
 
             for (var i = 0; i < _objectModels.Count; i++)
             {
@@ -37,7 +37,7 @@ namespace CSharpToJson.Application.Services
 
             if (_errors.Any())
             {
-                return (null, string.Join(string.Empty, _errors));
+                return (null, string.Join(string.Empty, _errors.Distinct()));
             }
 
             return (_builder.ToString(), null);
@@ -121,7 +121,7 @@ namespace CSharpToJson.Application.Services
                 catch (Exception ex)
                 {
                     _logger.LogError(ex, "Error by json write proceeding");
-                    _errors.Add($"Unknown type of property: {propertyModel.SyntaxName} {Environment.NewLine}");
+                    _errors.Add($"Unknown type \"{propertyModel.PropertyType}\" of property: {propertyModel.SyntaxName} {Environment.NewLine}");
                 }
             }
         }

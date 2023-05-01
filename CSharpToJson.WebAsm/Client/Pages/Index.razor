@@ -1,0 +1,123 @@
+﻿@page "/"
+@using Domain.Models;
+@using CSharpToJson.Application.Services
+@inject IJSRuntime Js;
+@inject ICodeAnalyzer CodeAnalyzer;
+@inject IJsonCodeWriter JsonCodeWriter;
+@implements IAsyncDisposable
+
+<PageTitle>Home Page</PageTitle>
+
+<div class="row gx-2 mt-3 ms-2 justify-content-between">
+    <div class="col-md-5">
+        <p>Your C# code</p>
+    </div>
+    <div class="col-md-6">
+        <p class="text-start">Json output or validation errors</p>
+    </div>
+</div>
+
+<div id="codeBlock">
+    <div>
+        <textarea @ref="_textArea" style="resize: none" spellcheck="false" class="form-control position-absolute" id="floatingTextarea"
+                  @onscroll="OnCodeInputScroll" @oninput="OnCodeInputUpdate" @bind="_inputCode"></textarea>
+        <pre id="highlighting" class="position-absolute" aria-hidden="true">
+            <code id="highlighting-content" class="language-csharp"></code>
+        </pre>
+    </div>
+
+    <div class="border border-2 rounded-3 position-absolute start-50" id="output">
+        <pre class="position-absolute" style="padding: 0em !important; margin: 0em !important;">
+            @if (!string.IsNullOrEmpty(Model.Json))
+            {
+            <code class="language-json" id="jsonOutput">@Model.Json</code>
+            }
+            else
+            {
+            <code class="language-json" id="jsonOutput">@Model.Errors</code>
+            }
+        </pre>
+    </div>
+</div>
+
+<div class="row gx-2 mt-3 justify-content-center">
+    <div class="col-auto">
+        <button type="submit" @onclick="OnConvertButtonClick" class="btn btn-primary btn-lg">Convert</button>
+    </div>
+</div>
+
+@code
+{
+    private JsonCodeViewModel Model { get; set; } = new ();
+    private IJSObjectReference _module;
+    private ElementReference _textArea;
+    private string _inputCode;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            _module = await Js.InvokeAsync<IJSObjectReference>("import", "./Pages/Index.razor.js");
+            await _module.InvokeVoidAsync("observe");
+        }
+
+        if (!string.IsNullOrEmpty(Model.Json))
+        {
+            await _module.InvokeVoidAsync("highlightJson", Model.Json);
+        }
+    }
+
+    public async Task OnCodeInputUpdate(ChangeEventArgs args)
+    {
+        await _module.InvokeVoidAsync("update", args.Value);
+    }
+
+    public async Task OnCodeInputScroll()
+    {
+        await _module.InvokeVoidAsync("syncScroll", _textArea);
+    }
+
+    public async Task OnConvertButtonClick(MouseEventArgs args)
+    {
+        if (string.IsNullOrEmpty(_inputCode))
+        {
+            Model = new JsonCodeViewModel
+            {
+                Errors = "C# code is empty"
+            };
+            return;
+        }
+
+        var analyzeRes = CodeAnalyzer.Analyze(_inputCode);
+
+        if (analyzeRes.error != null)
+        {
+            Model = new JsonCodeViewModel
+            {
+                Errors = analyzeRes.error
+            };
+            return;
+        }
+
+        var jsonRes = JsonCodeWriter.Write(analyzeRes.parsedTree);
+
+        if (jsonRes.errors != null)
+        {
+            Model = new JsonCodeViewModel
+                {
+                    Errors = jsonRes.errors
+                };
+            return;
+        }
+
+        Model = new JsonCodeViewModel
+        {
+            Json = await _module.InvokeAsync<string>("stringify", jsonRes.json)
+        };
+    }
+
+    public async ValueTask DisposeAsync()
+    {
+        await _module.DisposeAsync();
+    }
+}
