@@ -27,6 +27,12 @@ export function observe() {
     });
 
     resizeObserver.observe(document.querySelector('#floatingTextarea'));
+    initializeHighlight();
+
+    function initializeHighlight() {
+        Prism.highlightElement(document.querySelector("#example-csharp"));
+        Prism.highlightElement(document.querySelector("#example-json"));
+    }
 }
 
 export function stringify(json) {

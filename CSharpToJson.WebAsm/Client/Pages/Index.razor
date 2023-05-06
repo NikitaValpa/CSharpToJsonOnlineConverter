@@ -6,8 +6,9 @@
 @inject IJsonCodeWriter JsonCodeWriter;
 @implements IAsyncDisposable
 
-<PageTitle>Home Page</PageTitle>
+<PageTitle>C# to Json converter</PageTitle>
 
+<!-- Editor -->
 <div class="row gx-2 mt-3 ms-2 justify-content-between">
     <div class="col-md-5">
         <p>Your C# code</p>
@@ -43,6 +44,73 @@
 <div class="row gx-2 mt-3 justify-content-center">
     <div class="col-auto">
         <button type="submit" @onclick="OnConvertButtonClick" class="btn btn-primary btn-lg">Convert</button>
+    </div>
+</div>
+
+<!-- Description and example -->
+<div class="row gx-2 mt-3 ms-2 justify-content-start">
+    <div class="col-auto">
+        <p class="text-wrap" style="width: 50%">
+            This converter is designed to convert from C# models to json models. Access modifiers don't matter.
+            Unknown data types and object type, if they are not nullable, will be interpreted as declaring a new object.
+        </p>
+        <p class="text-wrap" style="width: 50%">
+            This converter currently <span class="fw-bold">only supports class and property declarations, the rest is ignored</span>. Example.
+        </p>
+    </div>
+</div>
+
+<div class="row gx-2 mt-3 ms-2 justify-content-start">
+    <div class="col-auto">
+        <p>C# Code</p>
+        <pre>
+        <code id="example-csharp" class="language-csharp">
+public class User
+{
+    public Guid Id { get; set; }
+    public string Name { get; set; }
+    public int Age { get; set; }
+    public DateTime DateOfBirth { get; set; }
+    public TimeSpan DelayOfNotify { get; set; }
+    public House House { get; set; }
+    public Car Car { get; set; }
+}
+
+public class Car
+{
+    public string Model { get; set; }
+    public string Brand { get; set; }
+    public long? Age { get; set; }
+}
+            </code>
+        </pre>
+    </div>
+    <div class="col-auto">
+        <p>Result</p>
+        <pre>
+        <code id="example-json" class="language-json">
+{
+    "User": {
+        "Id": "cb559609-5b15-453e-9480-715a6db67b16",
+        "Name": "string",
+        "Age": 0,
+        "DateOfBirth": "01.01.0001 00:00:00",
+        "DelayOfNotify": "00:00:00",
+        "House": {},
+        "Car": {
+            "Model": "string",
+            "Brand": "string",
+            "Age": null
+        }
+    },
+    "Car": {
+        "Model": "string",
+        "Brand": "string",
+        "Age": null
+    }
+}
+            </code>
+        </pre>
     </div>
 </div>
 
