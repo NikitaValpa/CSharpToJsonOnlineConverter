@@ -12,4 +12,4 @@ This project was written using the Blazor framework. All the logic for parsing t
 
 ## How it works
 
-![](https://github.com/NikitaValpa/CSharpToJsonOnlineConverter/blob/master/HowItWorks.png?raw=true)
+![](https://github.com/NikitaValpa/CSharpToJsonOnlineConverter/blob/master/Diagrams/HowItWorks.png?raw=true)
