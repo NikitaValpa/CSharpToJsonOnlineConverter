@@ -362,3 +362,5 @@ MigrationBackup/
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
 /Prometheus
+/CSharpToJson.WebAsm/Server/appsettings.Production.json
+/Diagrams/HowItWorks.drawio
