@@ -7,6 +7,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllersWithViews();
 builder.Services.AddRazorPages();
 builder.Services.AddCommonServices();
+builder.Services.AddHealthChecks();
 
 var app = builder.Build();
 
@@ -22,6 +23,7 @@ else
     app.UseHsts();
 }
 
+app.MapHealthChecks("/health");
 app.UseHttpsRedirection();
 
 app.UseBlazorFrameworkFiles();
