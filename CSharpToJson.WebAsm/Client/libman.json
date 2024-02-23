@@ -3,13 +3,11 @@
   "defaultProvider": "cdnjs",
   "libraries": [
     {
-      "library": "bootstrap@5.3.0-alpha3",
+      "library": "bootstrap@5.3.3",
       "destination": "wwwroot/bootstrap/",
       "files": [
         "js/bootstrap.min.js",
         "js/bootstrap.min.js.map",
-        "js/bootstrap.esm.min.js",
-        "js/bootstrap.esm.min.js.map",
         "js/bootstrap.bundle.min.js",
         "js/bootstrap.bundle.min.js.map",
         "css/bootstrap.css",
@@ -31,8 +29,7 @@
         "themes/prism-tomorrow.min.css",
         "components/prism-clike.min.js",
         "components/prism-core.min.js",
-        "components/prism-csharp.min.js",
-        "components/prism-json.min.js"
+        "components/prism-csharp.min.js"
       ]
     }
   ]
