@@ -100,40 +100,27 @@ a, .btn-link {
         content: var(--blazor-load-percentage-text, "Loading");
     }
 
-#floatingTextarea, #highlighting, #output {
-    margin: 10px;
-    padding: 10px;
-    width: calc(50% - 20px);
-    min-height: calc(50% - 20px);
-    max-height: calc(50% - 20px);
-    overflow: auto;
+.monaco-editor-container {
+    height: 350px;
 }
 
-#floatingTextarea, #highlighting {
-    white-space: nowrap;
-}
-
-#floatingTextarea, #highlighting, #highlighting * {
-    font-size: 12pt;
-    font-family: monospace;
-    line-height: 15pt;
-}
-
-#highlighting-content {
-    white-space: pre
-}
-
-#floatingTextarea {
-    z-index: 1;
-    color: transparent;
-    background: transparent;
-    caret-color: white;
-}
-
-#highlighting {
-    z-index: 0;
+.monaco-padding {
+    padding: 3px;
 }
 
 pre {
     background: #212529 !important;
+}
+
+#custom-scrollbar::-webkit-scrollbar {
+    background-color: #212529;
+    width: 14px;
+}
+
+#custom-scrollbar::-webkit-scrollbar-track {
+    border-left: 1px solid #393939
+}
+
+#custom-scrollbar::-webkit-scrollbar-thumb {
+    background-color: #424242;
 }

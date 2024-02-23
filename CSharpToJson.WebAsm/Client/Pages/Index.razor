@@ -18,17 +18,23 @@
     </div>
 </div>
 
-<div id="codeBlock">
-    <div>
-        <textarea @ref="_textArea" style="resize: none" spellcheck="false" class="form-control position-absolute" id="floatingTextarea"
-                  @onscroll="OnCodeInputScroll" @oninput="OnCodeInputUpdate" @bind="_inputCode"></textarea>
-        <pre id="highlighting" class="position-absolute" aria-hidden="true">
-            <code id="highlighting-content" class="language-csharp"></code>
-        </pre>
+<div id="codeBlock" style="min-height: 350px; max-height: 350px;" class="row">
+    <div class="col-md-6">
+        <StandaloneCodeEditor Id="floatingTextarea"
+                              ConstructionOptions="EditorConstructionOptions"
+                              CssClass="border border-2 rounded-3 monaco-padding"
+                              @ref="_codeEditor"/>
     </div>
 
-    <div class="border border-2 rounded-3 position-absolute start-50" id="output">
-        <pre class="position-absolute" style="padding: 0em !important; margin: 0em !important;">
+    <div class="border border-2 rounded-3 col-md-6" style="height: 350px; padding-left: 0; padding-right: 0; width: 49.3%" id="output">
+        
+        <img src="copy.png" alt="Copy to clipboard" 
+             style="width: 40px; height: 40px; position: absolute; right: 2%; margin-top: 10px; cursor: pointer;"
+             data-bs-toggle="tooltip"
+             data-bs-title="Copy to clipboard"
+             @onclick="OnCopyToClipboardClick"/>
+
+        <pre style="padding: 0em !important; margin: 0em !important; height: 345px" id="custom-scrollbar" @ref="_jsonCodeBlock">
             @if (!string.IsNullOrEmpty(Model.Json))
             {
             <code class="language-json" id="jsonOutput">@Model.Json</code>
@@ -48,85 +54,20 @@
 </div>
 
 <!-- Description and example -->
-<div class="row gx-2 mt-3 ms-2 justify-content-start">
-    <div class="col-auto">
-        <p class="text-wrap" style="width: 50%">
-            This converter is designed to convert from C# models to json models. Access modifiers don't matter.
-            Unknown data types and object type, if they are not nullable, will be interpreted as declaring a new object.
-        </p>
-        <p class="text-wrap" style="width: 50%">
-            This converter currently <span class="fw-bold">only supports class and property declarations, the rest is ignored</span>. Example.
-        </p>
-    </div>
-</div>
-
-<div class="row gx-2 mt-3 ms-2 justify-content-start">
-    <div class="col-auto">
-        <p>C# Code</p>
-        <pre>
-        <code id="example-csharp" class="language-csharp">
-public class User
-{
-    public Guid Id { get; set; }
-    public string Name { get; set; }
-    public int Age { get; set; }
-    public DateTime DateOfBirth { get; set; }
-    public TimeSpan DelayOfNotify { get; set; }
-    public House House { get; set; }
-    public Car Car { get; set; }
-}
-
-public class Car
-{
-    public string Model { get; set; }
-    public string Brand { get; set; }
-    public long? Age { get; set; }
-}
-            </code>
-        </pre>
-    </div>
-    <div class="col-auto">
-        <p>Result</p>
-        <pre>
-        <code id="example-json" class="language-json">
-{
-    "User": {
-        "Id": "cb559609-5b15-453e-9480-715a6db67b16",
-        "Name": "string",
-        "Age": 0,
-        "DateOfBirth": "01.01.0001 00:00:00",
-        "DelayOfNotify": "00:00:00",
-        "House": {},
-        "Car": {
-            "Model": "string",
-            "Brand": "string",
-            "Age": null
-        }
-    },
-    "Car": {
-        "Model": "string",
-        "Brand": "string",
-        "Age": null
-    }
-}
-            </code>
-        </pre>
-    </div>
-</div>
+<DescriptionAndExamples/>
 
 @code
 {
     private JsonCodeViewModel Model { get; set; } = new ();
     private IJSObjectReference _module;
-    private ElementReference _textArea;
-    private string _inputCode;
+    private StandaloneCodeEditor _codeEditor;
+    private ElementReference _jsonCodeBlock;
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         if (firstRender)
         {
             _module = await Js.InvokeAsync<IJSObjectReference>("import", "./Pages/Index.razor.js");
-            await _module.InvokeVoidAsync("observe");
         }
 
         if (!string.IsNullOrEmpty(Model.Json))
@@ -135,19 +76,40 @@ public class Car
         }
     }
 
-    public async Task OnCodeInputUpdate(ChangeEventArgs args)
+    private StandaloneEditorConstructionOptions EditorConstructionOptions(StandaloneCodeEditor editor)
     {
-        await _module.InvokeVoidAsync("update", args.Value);
+        return new StandaloneEditorConstructionOptions
+            {
+                AutomaticLayout = true,
+                Language = "csharp",
+                Value = "public class User\r\n" +
+                        "{\r\n" +
+                        "    public Guid Id { get; set; }\r\n" +
+                        "    public string Name { get; set; }\r\n" +
+                        "    public int Age { get; set; }\r\n" +
+                        "    public DateTime DateOfBirth { get; set; }\r\n" +
+                        "    public TimeSpan DelayOfNotify { get; set; }\r\n" +
+                        "    public House House { get; set; }\r\n" +
+                        "    public Car Car { get; set; }\r\n}\r\n\r\npublic class Car\r\n{\r\n" +
+                        "    public string Model { get; set; }\r\n" +
+                        "    public string Brand { get; set; }\r\n" +
+                        "    public long? Age { get; set; }\r\n" +
+                        "}",
+                Theme = "vs-dark",
+                AriaLabel = "Your c# code"
+            };
     }
 
-    public async Task OnCodeInputScroll()
+    public async Task OnCopyToClipboardClick()
     {
-        await _module.InvokeVoidAsync("syncScroll", _textArea);
+        await _module.InvokeVoidAsync("copyToClipboard", _jsonCodeBlock);
     }
 
     public async Task OnConvertButtonClick(MouseEventArgs args)
     {
-        if (string.IsNullOrEmpty(_inputCode))
+        var inputCode = await _codeEditor.GetValue();
+
+        if (string.IsNullOrEmpty(inputCode))
         {
             Model = new JsonCodeViewModel
             {
@@ -156,7 +118,7 @@ public class Car
             return;
         }
 
-        var analyzeRes = CodeAnalyzer.Analyze(_inputCode);
+        var analyzeRes = CodeAnalyzer.Analyze(inputCode);
 
         if (analyzeRes.error != null)
         {
