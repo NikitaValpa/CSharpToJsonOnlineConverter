@@ -66,15 +66,39 @@ namespace CSharpToJson.Application.Services
 
                 if (!hasChildren) return;
 
+                var clonedChildren = new List<ObjectModel>(propertyClassObject.Children.Count);
+
+                propertyClassObject.Children.ForEach(x =>
+                {
+                    clonedChildren.Add((ObjectModel)x.Clone());
+                });
+
+                propertyModel.Children = clonedChildren;
+
+                propertyModel.Children.ForEach(x =>
+                {
+                    x.Parent = propertyModel;
+                });
+
+                CheckChildOnCycleReference(propertyModel.Children, propertyModel);
+
                 accessorList.Add(propertyModel.SyntaxName);
 
-                for (var i = 0; i < propertyClassObject.Children.Count; i++)
+                for (var i = 0; i < propertyModel.Children.Count; i++)
                 {
-                    var propertyClass = _objectModels.FirstOrDefault(p => p.SyntaxName == propertyClassObject.Children[i].PropertyType);
-                    WritePropertyMember(propertyClassObject.Children[i], accessorList, propertyClass, i == propertyClassObject.Children.Count - 1);
+                    if (propertyModel.Children[i].IsCycleReference)
+                    {
+                        BuilderWriteCycleMember(propertyModel.Children[i].SyntaxName, CalculateIsLastObject(i));
+                        continue;
+                    }
+
+                    var propertyClass = _objectModels.FirstOrDefault(p => p.SyntaxName == propertyModel.Children[i].PropertyType);
+                    WritePropertyMember(propertyModel.Children[i], accessorList, propertyClass, CalculateIsLastObject(i));
                 }
 
                 BuilderWriteChildClassClosing(isLastObject);
+
+                bool CalculateIsLastObject(int iterator) => iterator == propertyModel.Children.Count - 1;
             }
             else if (propertyModel.TokenType == SyntaxKind.PropertyDeclaration)
             {
@@ -126,6 +150,11 @@ namespace CSharpToJson.Application.Services
             }
         }
 
+        private void BuilderWriteCycleMember(string syntaxName, bool isLastObject = false)
+        {
+            _builder.Append($"\"{syntaxName}\": \"*is cycle dependency*\"{(isLastObject ? string.Empty : ",")}{Environment.NewLine}");
+        }
+
         private void BuilderWriteMember(string syntaxName, string typeExample, bool isLastObject = false)
         {
             _builder.Append($"\"{syntaxName}\": {typeExample ?? "null"}{(isLastObject ? string.Empty : ",")}{Environment.NewLine}");
@@ -144,6 +173,29 @@ namespace CSharpToJson.Application.Services
         private void BuilderWriteClassClosing(bool isLastObject = false)
         {
             _builder.AppendLine($"}}{(isLastObject ? string.Empty : ",")}");
+        }
+
+        private void CheckChildOnCycleReference(List<ObjectModel> child, ObjectModel parent)
+        {
+            var cycleProperties = child.Where(x =>
+            {
+                return parent.TokenType switch
+                {
+                    SyntaxKind.ClassDeclaration => x.PropertyType == parent.SyntaxName,
+                    SyntaxKind.PropertyDeclaration => x.PropertyType == parent.PropertyType,
+                    _ => false
+                };
+            }).ToList();
+
+            if (cycleProperties.Any())
+            {
+                cycleProperties.ForEach(x => x.IsCycleReference = true);
+            }
+
+            if (parent.Parent != null)
+            {
+                CheckChildOnCycleReference(child, parent.Parent);
+            }
         }
     }
 }

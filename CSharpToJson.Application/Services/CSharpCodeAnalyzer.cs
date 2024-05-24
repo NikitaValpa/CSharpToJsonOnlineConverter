@@ -60,7 +60,7 @@ namespace CSharpToJson.Application.Services
             {
                 if (child.Kind() == SyntaxKind.ClassDeclaration)
                 {
-                    var subParent = new ObjectModel();
+                    var subParent = new ObjectModel(parent);
                     foreach (var item in child.ChildTokens())
                     {
                         if (item.Kind() != SyntaxKind.IdentifierToken) continue;
@@ -79,7 +79,7 @@ namespace CSharpToJson.Application.Services
                 }
                 else if (child.Kind() == SyntaxKind.PropertyDeclaration)
                 {
-                    var property = new ObjectModel();
+                    var property = new ObjectModel(parent);
                     foreach (var item in child.ChildTokens())
                     {
                         if (item.Kind() != SyntaxKind.IdentifierToken) continue;

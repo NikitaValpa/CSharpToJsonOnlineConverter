@@ -18,7 +18,7 @@
     </div>
 </div>
 
-<div id="codeBlock" style="min-height: 350px; max-height: 350px;" class="row">
+<div id="codeBlock" style="min-height: 350px; max-height: 600px;" class="row">
     <div class="col-md-6">
         <StandaloneCodeEditor Id="floatingTextarea"
                               ConstructionOptions="EditorConstructionOptions"
@@ -26,15 +26,17 @@
                               @ref="_codeEditor"/>
     </div>
 
-    <div class="border border-2 rounded-3 col-md-6" style="height: 350px; padding-left: 0; padding-right: 0; width: 49.3%" id="output">
+    <div class="border border-2 rounded-3 col-md-6" style="height: 600px; padding-left: 0; padding-right: 0; width: 49.3%" id="output">
         
         <img src="copy.png" alt="Copy to clipboard" 
-             style="width: 40px; height: 40px; position: absolute; right: 2%; margin-top: 10px; cursor: pointer;"
+             style="width: 40px; height: 40px; position: absolute; right: 2%; margin-top: 10px; cursor: pointer; display: none;"
              data-bs-toggle="tooltip"
              data-bs-title="Copy to clipboard"
+             data-bs-placement="left"
+             id="copy-button"
              @onclick="OnCopyToClipboardClick"/>
 
-        <pre style="padding: 0em !important; margin: 0em !important; height: 345px" id="custom-scrollbar" @ref="_jsonCodeBlock">
+        <pre style="padding: 0em !important; margin: 0em !important; height: 595px" id="custom-scrollbar" @ref="_jsonCodeBlock">
             @if (!string.IsNullOrEmpty(Model.Json))
             {
             <code class="language-json" id="jsonOutput">@Model.Json</code>
@@ -68,11 +70,16 @@
         if (firstRender)
         {
             _module = await Js.InvokeAsync<IJSObjectReference>("import", "./Pages/Index.razor.js");
+            await _module.InvokeVoidAsync("initialize");
         }
 
         if (!string.IsNullOrEmpty(Model.Json))
         {
             await _module.InvokeVoidAsync("highlightJson", Model.Json);
+        }
+        else
+        {
+            await _module.InvokeVoidAsync("disableCopyToClipboardButton");
         }
     }
 
