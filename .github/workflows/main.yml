@@ -1,0 +1,42 @@
+name: Deploy to GitHub Pages
+
+# Запускаем магию только на пуши в master
+on:
+  push:
+    branches: master
+    
+jobs:
+  deploy-to-github-pages:
+    runs-on: ubuntu-latest
+    steps:
+      # клонируем репозиторий на виртуальную машину
+    - uses: actions/checkout@v2
+    
+      # ставим нужный SDK (можно использовать и более старые)
+    - name: Setup .NET 7
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: '7.0.x'
+        include-prerelease: true
+        
+      # генерируем статические файлы
+    - name: Publish .NET Core Project
+      run: dotnet publish CSharpToJson.WebAsm/Server/CSharpToJson.WebAsm.Server.csproj -c Release --output release --nologo
+
+    - name: Uploading files to gh-pages branch
+      uses: JamesIves/github-pages-deploy-action@4.1.4
+      with:
+        branch: gh-pages
+        folder: release/wwwroot
+
+      # меняем '/' на '/BlazorGitHubPagesDemo/'
+    - name: Change base-tag in index.html from / to CSharpToJsonOnlineConverter
+      run: sed -i 's/<base href="\/" \/>/<base href="\/CSharpToJsonOnlineConverter\/" \/>/g' release/wwwroot/index.html
+
+      # отключаем jekyll
+    - name: Add .nojekyll file
+      run: touch release/wwwroot/.nojekyll
+
+      # копируем index.html в 404.html
+    - name: copy index.html to 404.html
+      run: cp release/wwwroot/index.html release/wwwroot/404.html
