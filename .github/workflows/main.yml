@@ -23,12 +23,6 @@ jobs:
     - name: Publish .NET Core Project
       run: dotnet publish CSharpToJson.WebAsm/Server/CSharpToJson.WebAsm.Server.csproj -c Release --output release --nologo
 
-    - name: Uploading files to gh-pages branch
-      uses: JamesIves/github-pages-deploy-action@4.1.4
-      with:
-        branch: gh-pages
-        folder: release/wwwroot
-
       # меняем '/' на '/BlazorGitHubPagesDemo/'
     - name: Change base-tag in index.html from / to CSharpToJsonOnlineConverter
       run: sed -i 's/<base href="\/" \/>/<base href="\/CSharpToJsonOnlineConverter\/" \/>/g' release/wwwroot/index.html
@@ -40,3 +34,9 @@ jobs:
       # копируем index.html в 404.html
     - name: copy index.html to 404.html
       run: cp release/wwwroot/index.html release/wwwroot/404.html
+
+    - name: Uploading files to gh-pages branch
+      uses: JamesIves/github-pages-deploy-action@4.1.4
+      with:
+        branch: gh-pages
+        folder: release/wwwroot
